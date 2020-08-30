@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os, sys
-from xy_cli.lib.FileUtil import FileUtil
+from xy_cli.libs.FileUtil import FileUtil
 
 command_name = os.path.basename(__file__).split('.', 1)[0].replace("_", ":")
 
