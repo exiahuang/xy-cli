@@ -58,7 +58,7 @@ if len(sys.argv) >= 2 and sys.argv[1] == 'py2exe':
         'compressed': 1,
         'optimize': 2,
         'dist_dir': '.\\dist\\win',
-        'includes': ["xy_cli", "xy_cli.commands"]
+        'includes': ["xy_cli", "xy_cli.commands", "xy_cli.libs"]
     }
     params = {
         'console': py2exe_console,
@@ -85,7 +85,7 @@ setup(
     version=__version__,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
-    keywords='xy-cli sdk tools xytools-cli salesforce',
+    keywords='xy-cli command line',
     author='exiahuang',
     author_email='exia.huang@outlook.com',
     url='https://github.com/exiahuang/xy-cli',
