@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os, sys
+from xy_cli.lib.FileUtil import FileUtil
 
 command_name = os.path.basename(__file__).split('.', 1)[0].replace("_", ":")
 
@@ -9,7 +10,6 @@ def register(parser, subparsers, **kwargs):
 
     def handler(args):
         if args.from_dir:
-            from ..lib.FileUtil import FileUtil
             print("start to clone...")
             format_data = {}
             if args.data:

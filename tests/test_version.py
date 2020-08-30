@@ -10,7 +10,7 @@
 
 from preggy import expect
 
-from sfdc_cli import __version__
+from xy_cli import __version__
 from tests.base import TestCase
 
 
