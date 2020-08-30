@@ -55,3 +55,7 @@ python setup.py py2exe
 # Acknowledgement
 
 ## Basic on OpenSource
+
+# history
+
+- 2020/08/30 init project
