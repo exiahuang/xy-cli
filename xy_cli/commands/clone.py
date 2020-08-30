@@ -8,7 +8,7 @@ command_name = os.path.basename(__file__).split('.', 1)[0].replace("_", ":")
 def register(parser, subparsers, **kwargs):
 
     def handler(args):
-        if args.template:
+        if args.from_dir:
             from ..lib.FileUtil import FileUtil
             print("start to clone...")
             format_data = {}
@@ -16,18 +16,18 @@ def register(parser, subparsers, **kwargs):
                 for d in args.data:
                     d1 = d.split('=')
                     format_data[d1[0]] = d1[1]
-            FileUtil().clone(args.template, args.savedir, format_data)
+            FileUtil().clone(args.from_dir, args.to_dir, format_data)
         else:
             print(parser.parse_args([command_name, '--help']))
 
     subcommand = subparsers.add_parser(command_name, help='clone folder')
     subcommand.add_argument('-f',
-                            '--from',
+                            '--from_dir',
                             type=str,
                             help="from directory",
                             required=True)
     subcommand.add_argument('-t',
-                            '--to',
+                            '--to_dir',
                             type=str,
                             help="to directory",
                             required=True)
