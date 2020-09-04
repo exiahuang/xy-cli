@@ -48,6 +48,7 @@ class FileUtil():
         template_dir = os.path.abspath(template_dir)
         abs_save_dir = os.path.abspath(save_dir)
         for f in self.listFiles(template_dir):
+            print(f["filepath"])
             template_src = self.readFile(f["filepath"])
             content = self.format(template_src, format_data)
             save_file_subpath = self.format(f["subpath"], format_data)
