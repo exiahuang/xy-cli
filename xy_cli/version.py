@@ -8,5 +8,5 @@
 # http://www.opensource.org/licenses/Apache-2.0
 # Copyright (c) 2020, exiahuang <exia.huang@outlook.com>
 
-__version__ = '0.5'  # NOQA
+__version__ = '0.6'  # NOQA
 __desc__ = 'xy command tools'

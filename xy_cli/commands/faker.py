@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from ..libs.XlsxLoader import XlsxLoader
-import sys, os
+from ..libs.DataFactory import DataFactory
+
+import sys, os, json
 import pprint
 import argparse
 
@@ -16,6 +18,7 @@ def main(args):
                                   header_col=args.header_col,
                                   end_row=args.end_row,
                                   end_col=args.end_col)
+
     if args.debug:
         print("filter_title: %s" % args.filter_title)
         print("filter: %s" % args.filter)
@@ -29,28 +32,52 @@ def main(args):
         print("no data!")
         return
 
+    dataFactory = DataFactory(args.langs)
     result = []
-    header = data[0].keys()
-    if args.format is None:
-        result.append(",".join(header))
-    for row in data:
-        if args.format:
-            result.append(args.format.format(**row))
-        else:
-            result.append(",".join(row.values()))
-    print(args.IFS.join(result), end="")
+    limit_size = args.limit
+    for size in range(0, limit_size):
+        item = {}
+        for row in data:
+            item[row["feild_api"]] = dataFactory.get_mock_data(
+                row["feild_type"], row["feild_default_value"], (size + 1))
+        result.append(item)
 
+    header = result[0].keys()
+    table_name = args.sheet
+    if args.type == 'json':
+        print(json.dumps(result, indent=2, sort_keys=False, ensure_ascii=False))
+    elif args.type == 'csv':
+        print(",".join(header))
+        for row in result:
+            print(",".join(row.values()))
+    elif args.type == 'sql':
+        columns = " , ".join(header)
+        for row in result:
+            values = [
+                "'%s'" % ",".join(v) if type(v) is list else "'%s'" % str(v)
+                for v in row.values()
+            ]
+            sql = "INSERT INTO {TABLE_NAME} ({COLUMNS}) VALUES ({VALUES});".format(
+                TABLE_NAME=table_name,
+                COLUMNS=columns, VALUES=" , ".join(values))
+            print(sql)
+    elif args.type == 'code':
+        for idx, row in enumerate(result):
+            for key, value in row.items():
+                print("%s%s.%s = '%s';" % (table_name, idx, key, value))
+            print()
 
 def register(parser, subparsers, **kwargs):
 
     def handler(args):
-        if args.file is None or args.example:
+        if args.file is None:
             print(parser.parse_args([command_name, '--help']))
             return
         if args.file:
             main(args)
 
-    subcommand = subparsers.add_parser(command_name, help='excel data reader')
+    subcommand = subparsers.add_parser(command_name,
+                                       help='create faker json data. ')
     subcommand.add_argument('-f',
                             '--file',
                             type=str,
@@ -82,16 +109,6 @@ def register(parser, subparsers, **kwargs):
                             default=None,
                             help='end_col',
                             required=False)
-    subcommand.add_argument('--IFS',
-                            type=str,
-                            default='\r\n',
-                            help='IFS, default CRLF',
-                            required=False)
-    subcommand.add_argument('--format',
-                            type=str,
-                            default=None,
-                            help='print format for row.',
-                            required=False)
     subcommand.add_argument('--filter',
                             nargs="*",
                             help='meta_type',
@@ -101,12 +118,29 @@ def register(parser, subparsers, **kwargs):
                             help='filter_title',
                             default='filter',
                             required=False)
-    subcommand.add_argument('--example',
-                            action='store_true',
-                            help='print usage example',
-                            required=False)
     subcommand.add_argument('--debug',
                             action='store_true',
                             help='debug',
+                            required=False)
+    subcommand.add_argument(
+        '-l',
+        '--langs',
+        nargs='*',
+        default=['ja_JP'],
+        help=
+        "languages, default 'ja_JP'. example: 'en_US', 'ja_JP', 'zh_CN', 'zh_TW'",
+        required=False)
+    subcommand.add_argument('-m',
+                            '--limit',
+                            type=int,
+                            default=5,
+                            help='generate size, default 5',
+                            required=False)
+    subcommand.add_argument('-t',
+                            '--type',
+                            type=str,
+                            default='json',
+                            choices=['json', 'csv', 'sql', 'code'],
+                            help='format type',
                             required=False)
     subcommand.set_defaults(handler=handler)
