@@ -38,8 +38,9 @@ def main(args):
     for size in range(0, limit_size):
         item = {}
         for row in data:
-            item[row["feild_api"]] = dataFactory.get_mock_data(
-                row["feild_type"], row["feild_default_value"], (size + 1))
+            if row["feild_type"] or row["feild_default_value"]:
+                item[row["feild_api"]] = dataFactory.get_mock_data(
+                    row["feild_type"], row["feild_default_value"], (size + 1))
         result.append(item)
 
     header = result[0].keys()

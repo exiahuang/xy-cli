@@ -111,7 +111,7 @@ setup(
         # remember to use 'package-name>=x.y.z,<x.y+1.0' notation (this way you get bugfixes)
         'xlrd',
         'Faker',
-        
+        'gTTS',
     ],
     extras_require={
         'tests': tests_require,
