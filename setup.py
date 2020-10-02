@@ -112,6 +112,7 @@ setup(
         'xlrd',
         'Faker',
         'gTTS',
+        'xmltodict',
     ],
     extras_require={
         'tests': tests_require,

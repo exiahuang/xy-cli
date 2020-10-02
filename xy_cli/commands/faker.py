@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from ..libs.XlsxLoader import XlsxLoader
 from ..libs.DataFactory import DataFactory
+from ..libs.util import json_serial
 
 import sys, os, json
 import pprint
@@ -38,15 +39,15 @@ def main(args):
     for size in range(0, limit_size):
         item = {}
         for row in data:
-            if row["feild_type"] or row["feild_default_value"]:
-                item[row["feild_api"]] = dataFactory.get_mock_data(
-                    row["feild_type"], row["feild_default_value"], (size + 1))
+            if row["mock_type"] or row.get("mock_default_value"):
+                item[row["mock_key"]] = dataFactory.get_mock_data(
+                    row["mock_type"], row.get("mock_default_value"), (size + 1))
         result.append(item)
 
     header = result[0].keys()
     table_name = args.sheet
     if args.type == 'json':
-        print(json.dumps(result, indent=2, sort_keys=False, ensure_ascii=False))
+        print(json.dumps(result, default=json_serial, indent=2, sort_keys=False, ensure_ascii=False))
     elif args.type == 'csv':
         print(",".join(header))
         for row in result:

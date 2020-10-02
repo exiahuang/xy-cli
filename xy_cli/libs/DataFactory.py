@@ -285,7 +285,9 @@ class DataFactory():
         self.fake = Faker(langs)
 
     def get_mock_data(self, mock_data_type, default_value, seq):
-        val = default_value
+        if default_value:
+            dvs = default_value.split("\n")
+            return dvs[self.fake.random_int(min=0, max=len(dvs) - 1)]
         if mock_data_type == "auto_increment":
             val = seq
         elif mock_data_type in DEAULT_MOCK_DATA_TYPE:
